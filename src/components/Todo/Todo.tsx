@@ -63,7 +63,16 @@ const Todo = ({ handleLogout }: TodoProps) => {
     setNewTodo('');
   };
 
+  const countActiveTodos = () => {
+    return todos.filter((todo) => !todo.completed).length;
+  };
+
+  const countCompletedTodos = () => {
+    return todos.filter((todo) => todo.completed).length;
+  };
+
   return (
+    <div className='outerbox'>
     <div className="todo-container">
       <h2>Todo List</h2>
       <button onClick={handleLogout} className="logout-button">
@@ -82,7 +91,7 @@ const Todo = ({ handleLogout }: TodoProps) => {
             <button onClick={updateTodo} className="action-button">
               Update
             </button>
-            <button onClick={cancelUpdate} className="action-button">
+            <button onClick={cancelUpdate} className="action-button cancel-button">
               Cancel
             </button>
           </>
@@ -103,37 +112,45 @@ const Todo = ({ handleLogout }: TodoProps) => {
       </div>
       <ul className="todo-list">
         {todos.map((todo) => (
-          <li
-            key={todo.id}
-            className={`todo-item ${todo.completed ? 'completed' : ''}`}
-          >
+          <li key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
+            <label className="todo-label">
+              <input
+                type="radio"
+                checked={todo.completed}
+                onChange={() => toggleTodoStatus(todo.id)}
+                className="radio-button"
+              />
+              <span className="checkmark"></span>
+            </label>
             <span
               onClick={() => toggleTodoStatus(todo.id)}
-              className="todo-text"
+              className={`todo-text ${todo.completed ? 'completed' : ''}`}
             >
               {todo.text}
             </span>
             {!selectedTodo ? (
               <button
                 onClick={() => setSelectedTodo(todo)}
-                className="action-button"
+                className="action-button update-button"
               >
                 Update
               </button>
             ) : (
-              <button disabled className="action-button">
+              <button disabled className="action-button update-button">
                 Update
               </button>
             )}
-            <button
-              onClick={() => deleteTodo(todo.id)}
-              className="action-button"
-            >
-              Delete
+            <button onClick={() => deleteTodo(todo.id)} className="action-button delete-button">
+              X
             </button>
           </li>
         ))}
       </ul>
+      <div className="footer">
+        <span>{countActiveTodos()} todos left</span>
+        <span>{countCompletedTodos()} completed</span>
+      </div>
+    </div>
     </div>
   );
 };
